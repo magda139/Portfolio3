@@ -50,7 +50,7 @@ public class Main extends Application {
         //rooms.getItems().addAll(model.getRoom());
 
         time.setStyle("-fx-font: 15 arial;");
-        time.setPromptText("Select teacher");
+        time.setPromptText("Select time slot");
         //time.getItems().addAll(model.getTimeslot());
 
         //button.setOnAction(e->con.model.addTeacher(field.getText()));
