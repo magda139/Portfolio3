@@ -130,10 +130,10 @@ class MyDB{
     }
     public void open(){
         try{
-            String url = "jdbc:sqlite:C:\\Users\\Magda\\IdeaProjects\\portfolio3\\database\\database.db";
+            String url = "jdbc:sqlite:database.db";
             conn = DriverManager.getConnection(url);
         } catch (SQLException e) {
-            System.out.println("cannot open");
+            System.out.println(e.getMessage());
             if(conn != null)close();
         };
     }
