@@ -3,6 +3,7 @@ package com.company;
 import java.sql.*;
 
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -17,26 +18,44 @@ public class Main extends Application {
     private Controller con=new Controller(model,this);
     private TextField field=new TextField();
     private TextArea area=new TextArea();
-    ComboBox<String> lecturer = new ComboBox<>();
+
+    ComboBox<String> teacher = new ComboBox<>();
     ComboBox<String> courses = new ComboBox<>();
     ComboBox<String> rooms = new ComboBox<>();
-    ComboBox<String> timeslot = new ComboBox<>();
-    Button button = new Button("Add lecturer");
-    Button button2 = new Button("Find room");
+    ComboBox<String> time= new ComboBox<>();
+
+    Button button = new Button("Check");
+
     void setArea(String s){area.setText(s);}
     void clearField(){field.setText("");}
+
     @Override
     public void start(Stage stage) {
-        con.initArea();
-        field.setOnAction(e->con.enterText(field.getText()));
-        //VBox root = new VBox(courses,lecturer,rooms,timeslot,field,button,button2,area);
-        VBox root = new VBox(lecturer,field,button,button2,area);
-        lecturer.getItems().addAll(model.getTeacher());
+        //con.initArea();
+        //field.setOnAction(e->con.enterText(field.getText()));
+        //VBox root = new VBox(courses,teacher,rooms,time,field,button,button2, area);
+        VBox root = new VBox(courses,teacher,rooms, time,button, area);
+        root.setSpacing(10);
+
+        courses.setStyle("-fx-font: 15 arial;");
+        courses.setPromptText("Select course");
         //courses.getItems().addAll(model.getCourses());
+
+        teacher.setStyle("-fx-font: 15 arial;");
+        teacher.setPromptText("Select teacher");
+        teacher.getItems().addAll(model.getTeacher());
+
+        rooms.setStyle("-fx-font: 15 arial;");
+        rooms.setPromptText("Select room");
         //rooms.getItems().addAll(model.getRoom());
-        //timeslot.getItems().addAll(model.getTimeslot());
-        button.setOnAction(e->con.model.addTeacher(field.getText()));
-        //button2.setOnAction(e->con.findRoom(courses.getValue()));
+
+        time.setStyle("-fx-font: 15 arial;");
+        time.setPromptText("Select teacher");
+        //time.getItems().addAll(model.getTimeslot());
+
+        //button.setOnAction(e->con.model.addTeacher(field.getText()));
+        button.setStyle("-fx-font: 10 arial; -fx-base: red; -fx-text-fill: white;");
+
         Scene scene = new Scene(root, 500, 500);
         stage.setTitle("Portfolio3");
         stage.setScene(scene);
@@ -89,6 +108,7 @@ class Model{
     ArrayList<String> getTeacher(){
         return db.query("select name from Teacher;","name");
     }
+
     void add(String s){ // remember to sanitize your data!
         db.cmd("insert into Teacher (name) values ('"+s+"');");
     }
@@ -180,12 +200,5 @@ class MyDB{
     }
 
 }
-//Example from Moodle
-//Model();{
-// db.cmd(" drop table ");
-// db.cmd("course" " 100 " );
-// }
-//addRoom, addLecturer
-//for(int i = 1; i < 10; i++) addSlot("Slot" + i);
-//boolean hasLecturer(String s)
+
 
