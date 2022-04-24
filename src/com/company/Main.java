@@ -3,6 +3,8 @@ package com.company;
 import java.sql.*;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -15,12 +17,15 @@ import java.util.*;
 public class Main extends Application {
 
     private Model model=new Model();
+
     private Controller con=new Controller(model,this);
     private TextField field=new TextField();
     private TextArea area=new TextArea();
 
     ComboBox<String> teacher = new ComboBox<>();
+
     ComboBox<String> courses = new ComboBox<>();
+
     ComboBox<String> rooms = new ComboBox<>();
     ComboBox<String> time= new ComboBox<>();
 
@@ -39,7 +44,7 @@ public class Main extends Application {
 
         courses.setStyle("-fx-font: 15 arial;");
         courses.setPromptText("Select course");
-        //courses.getItems().addAll(model.getCourses());
+        courses.getItems().addAll(model.getCourse());
 
         teacher.setStyle("-fx-font: 15 arial;");
         teacher.setPromptText("Select teacher");
@@ -47,11 +52,11 @@ public class Main extends Application {
 
         rooms.setStyle("-fx-font: 15 arial;");
         rooms.setPromptText("Select room");
-        //rooms.getItems().addAll(model.getRoom());
+        rooms.getItems().addAll(model.getRoom());
 
         time.setStyle("-fx-font: 15 arial;");
-        time.setPromptText("Select teacher");
-        //time.getItems().addAll(model.getTimeslot());
+        time.setPromptText("Select time");
+        time.getItems().addAll(model.getTimeBlock());
 
         //button.setOnAction(e->con.model.addTeacher(field.getText()));
         button.setStyle("-fx-font: 10 arial; -fx-base: red; -fx-text-fill: white;");
@@ -72,6 +77,8 @@ class Controller{
     Controller(Model model, Main view){
         this.model=model; this.view=view;
     }
+
+
     void initArea(){
         String toarea="";
         for(String t:model.get())toarea+=t+"\n";
@@ -95,18 +102,31 @@ class Controller{
 
 class Model{
 
+
     MyDB db = new MyDB();
     Model(){
         //db.cmd("create table if not exists Teacher" + "fld1 integer primary key autoincrement, fld2 text);");
-        db.cmd("drop table if exists Teacher ;");
-        db.cmd("create table if not exists Teacher "+ "(name text);");
-        for(String s: getTeacher())System.out.println(s);
+        //db.cmd("drop table if exists Teacher ;");
+        //db.cmd("create table if not exists Teacher "+ "(name text);");
+        //for(String s: getTeacher())System.out.println(s);
     }
     void addTeacher(String s){
         db.cmd("insert into Teacher (name) values ('"+s+"');");
     }
     ArrayList<String> getTeacher(){
         return db.query("select name from Teacher;","name");
+    }
+
+    ArrayList<String> getCourse(){
+        return db.query("select CourseName from Course;","CourseName");
+    }
+
+    ArrayList<String> getRoom(){
+        return db.query("select RoomName from Room;","RoomName");
+    }
+
+    ArrayList<String> getTimeBlock(){
+        return db.query("select Weekday from TimeBlock;","Weekday");
     }
 
     void add(String s){ // remember to sanitize your data!
@@ -130,10 +150,10 @@ class MyDB{
     }
     public void open(){
         try{
-            String url = "jdbc:sqlite:C:\\Users\\Magda\\IdeaProjects\\portfolio3\\database\\database.db";
+            String url = "jdbc:sqlite:database\\database.db";
             conn = DriverManager.getConnection(url);
         } catch (SQLException e) {
-            System.out.println("cannot open");
+            System.out.println(e.getMessage());
             if(conn != null)close();
         };
     }
