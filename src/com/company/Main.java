@@ -3,6 +3,7 @@ package com.company;
 import java.sql.*;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -11,7 +12,34 @@ import javafx.stage.Stage;
 
 import java.util.*;
 
+import static java.sql.DriverManager.getConnection;
 
+public class Main{
+
+    public static void main (String[] args){
+        String url="jdbc:sqlite:database\\database.db";
+        ScheduleModel TDB=new ScheduleModel(url);
+        try {
+            TDB.connect();
+            TDB.CreateStatement();
+            ArrayList<String> names = TDB.SQLQueryTeacherNames();
+            TDB.PrintTeachers(names);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        finally {
+            try{
+                TDB.close();
+
+            }catch (SQLException ex)
+            {
+                System.out.println(ex.getMessage());
+            }
+        }
+    }
+}
+
+    /*
 public class Main extends Application {
 
     private Model model=new Model();
@@ -64,15 +92,30 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-}
 
+}
+*/
+    /*
 class Controller{
     Model model;
     Main view;
-    Controller(Model model, Main view){
-        this.model=model; this.view=view;
+    public Controller(Model model){
+        this.model=model;
+        try {
+            model.connect();
+            model.CreateStatement();
+        }catch (SQLException e){
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            }
+        }
     }
-    void initArea(){
+
+    public void setView(Main view){
+        this.view = view;
+        view.exitBtn.setOnAction(e-> Platform.exit());
+    }
+    public void initArea(){
         String toarea="";
         for(String t:model.get())toarea+=t+"\n";
         view.setArea(toarea);
@@ -91,8 +134,9 @@ class Controller{
             model.addLecturer(s);
             view.lecturer.getItems().add(s);
         }*/
-}
 
+
+/*
 class Model{
 
     MyDB db = new MyDB();
@@ -131,7 +175,7 @@ class MyDB{
     public void open(){
         try{
             String url = "jdbc:sqlite:database.db";
-            conn = DriverManager.getConnection(url);
+            conn = getConnection(url);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             if(conn != null)close();
@@ -200,5 +244,5 @@ class MyDB{
     }
 
 }
-
+*/
 
