@@ -150,7 +150,8 @@ class MyDB{
     }
     public void open(){
         try{
-            String url = "jdbc:sqlite:database\\database.db";
+            //String url = "jdbc:sqlite:database\\database.db"; //Windows
+            String url = "jdbc:sqlite:database/database.db"; //Mac
             conn = DriverManager.getConnection(url);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
