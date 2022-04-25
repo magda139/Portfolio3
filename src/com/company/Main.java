@@ -3,6 +3,9 @@ package com.company;
 import java.sql.*;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -14,29 +17,50 @@ import java.util.*;
 public class Main extends Application {
 
     private Model model=new Model();
+
     private Controller con=new Controller(model,this);
     private TextField field=new TextField();
     private TextArea area=new TextArea();
-    ComboBox<String> lecturer = new ComboBox<>();
+
+    ComboBox<String> teacher = new ComboBox<>();
+
     ComboBox<String> courses = new ComboBox<>();
+
     ComboBox<String> rooms = new ComboBox<>();
-    ComboBox<String> timeslot = new ComboBox<>();
-    Button button = new Button("Add lecturer");
-    Button button2 = new Button("Find room");
+    ComboBox<String> time= new ComboBox<>();
+
+    Button button = new Button("Check");
+
     void setArea(String s){area.setText(s);}
     void clearField(){field.setText("");}
+
     @Override
     public void start(Stage stage) {
-        con.initArea();
-        field.setOnAction(e->con.enterText(field.getText()));
-        //VBox root = new VBox(courses,lecturer,rooms,timeslot,field,button,button2,area);
-        VBox root = new VBox(lecturer,field,button,button2,area);
-        lecturer.getItems().addAll(model.getTeacher());
-        //courses.getItems().addAll(model.getCourses());
-        //rooms.getItems().addAll(model.getRoom());
-        //timeslot.getItems().addAll(model.getTimeslot());
-        button.setOnAction(e->con.model.addTeacher(field.getText()));
-        //button2.setOnAction(e->con.findRoom(courses.getValue()));
+        //con.initArea();
+        //field.setOnAction(e->con.enterText(field.getText()));
+        //VBox root = new VBox(courses,teacher,rooms,time,field,button,button2, area);
+        VBox root = new VBox(courses,teacher,rooms, time,button, area);
+        root.setSpacing(10);
+
+        courses.setStyle("-fx-font: 15 arial;");
+        courses.setPromptText("Select course");
+        courses.getItems().addAll(model.getCourse());
+
+        teacher.setStyle("-fx-font: 15 arial;");
+        teacher.setPromptText("Select teacher");
+        teacher.getItems().addAll(model.getTeacher());
+
+        rooms.setStyle("-fx-font: 15 arial;");
+        rooms.setPromptText("Select room");
+        rooms.getItems().addAll(model.getRoom());
+
+        time.setStyle("-fx-font: 15 arial;");
+        time.setPromptText("Select time");
+        time.getItems().addAll(model.getTimeBlock());
+
+        //button.setOnAction(e->con.model.addTeacher(field.getText()));
+        button.setStyle("-fx-font: 10 arial; -fx-base: red; -fx-text-fill: white;");
+
         Scene scene = new Scene(root, 500, 500);
         stage.setTitle("Portfolio3");
         stage.setScene(scene);
@@ -53,6 +77,8 @@ class Controller{
     Controller(Model model, Main view){
         this.model=model; this.view=view;
     }
+
+
     void initArea(){
         String toarea="";
         for(String t:model.get())toarea+=t+"\n";
@@ -76,12 +102,13 @@ class Controller{
 
 class Model{
 
+
     MyDB db = new MyDB();
     Model(){
         //db.cmd("create table if not exists Teacher" + "fld1 integer primary key autoincrement, fld2 text);");
-        db.cmd("drop table if exists Teacher ;");
-        db.cmd("create table if not exists Teacher "+ "(name text);");
-        for(String s: getTeacher())System.out.println(s);
+        //db.cmd("drop table if exists Teacher ;");
+        //db.cmd("create table if not exists Teacher "+ "(name text);");
+        //for(String s: getTeacher())System.out.println(s);
     }
     void addTeacher(String s){
         db.cmd("insert into Teacher (name) values ('"+s+"');");
@@ -89,6 +116,19 @@ class Model{
     ArrayList<String> getTeacher(){
         return db.query("select name from Teacher;","name");
     }
+
+    ArrayList<String> getCourse(){
+        return db.query("select CourseName from Course;","CourseName");
+    }
+
+    ArrayList<String> getRoom(){
+        return db.query("select RoomName from Room;","RoomName");
+    }
+
+    ArrayList<String> getTimeBlock(){
+        return db.query("select Weekday from TimeBlock;","Weekday");
+    }
+
     void add(String s){ // remember to sanitize your data!
         db.cmd("insert into Teacher (name) values ('"+s+"');");
     }
@@ -110,10 +150,10 @@ class MyDB{
     }
     public void open(){
         try{
-            String url = "jdbc:sqlite:C:\\Users\\Magda\\IdeaProjects\\portfolio3\\database\\database.db";
+            String url = "jdbc:sqlite:database\\database.db";
             conn = DriverManager.getConnection(url);
         } catch (SQLException e) {
-            System.out.println("cannot open");
+            System.out.println(e.getMessage());
             if(conn != null)close();
         };
     }
@@ -180,12 +220,5 @@ class MyDB{
     }
 
 }
-//Example from Moodle
-//Model();{
-// db.cmd(" drop table ");
-// db.cmd("course" " 100 " );
-// }
-//addRoom, addLecturer
-//for(int i = 1; i < 10; i++) addSlot("Slot" + i);
-//boolean hasLecturer(String s)
+
 
