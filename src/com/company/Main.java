@@ -1,11 +1,14 @@
 package com.company;
 
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -25,7 +28,10 @@ public class Main extends Application {
     ComboBox<String> rooms = new ComboBox<>();
     ComboBox<String> time= new ComboBox<>();
 
-    Button button = new Button("Add teacher");
+    Button buttonC = new Button("Add Course");
+    Button buttonT = new Button("Add Teacher ");
+    Button buttonR = new Button("Add Room");
+    Button buttonTi = new Button("Add Time");
 
     void setArea(String s){area.setText(s);}
     void clearField(){field.setText("");}
@@ -34,40 +40,50 @@ public class Main extends Application {
     public void start(Stage stage) {
         con.initArea();
         field.setOnAction(e->con.enterText(field.getText()));
-        //VBox root = new VBox(courses,teacher,rooms,time,field,button,button2, area);
-        VBox root = new VBox(courses,teacher,rooms, field, time,button, area);
-        root.setSpacing(10);
 
-        courses.setStyle("-fx-font: 15 arial;");
+        VBox vbox = new VBox(courses, teacher, rooms, time, field);
+        vbox.setPadding(new Insets(15, 12, 15, 12));
+        vbox.setSpacing(10); //gab
+        vbox.setStyle("-fx-font: 10 arial;"); //text
+        ;
+
         courses.setPromptText("Select course");
         courses.getItems().addAll(model.getCourse());
 
-        teacher.setStyle("-fx-font: 15 arial;");
         teacher.setPromptText("Select teacher");
         teacher.getItems().addAll(model.getTeacher());
 
-        rooms.setStyle("-fx-font: 15 arial;");
         rooms.setPromptText("Select room");
         rooms.getItems().addAll(model.getRoom());
 
-        time.setStyle("-fx-font: 15 arial;");
         time.setPromptText("Select time");
         time.getItems().addAll(model.getTimeBlock());
 
-        //button.setOnAction(e->con.model.addTeacher(field.getText()));
-        button.setStyle("-fx-font: 10 arial; -fx-base: red; -fx-text-fill: white;");
-        button.setOnAction(e->con.addTeacher(field.getText()));
+        HBox hbox = new HBox(buttonC, buttonT, buttonR,buttonTi);
+        hbox.setPadding(new Insets(15, 12, 15, 12));
+        hbox.setSpacing(10);
+        hbox.setStyle("-fx-font: 10 arial; -fx-base: red; -fx-text-fill: white;");
 
-        Scene scene = new Scene(root, 500, 500);
+        buttonC.setOnAction(e->con.addCourse(field.getText()));
+        buttonT.setOnAction(e->con.addTeacher(field.getText()));
+        buttonR.setOnAction(e->con.addRoom(field.getText()));
+        buttonTi.setOnAction(e->con.addTimeBlock(field.getText()));
+
+        BorderPane border = new BorderPane();
+        border.setTop(vbox);
+        border.setBottom(hbox);
+        border.setCenter(area);
+
+        Scene scene = new Scene(border, 500, 500);
         stage.setTitle("Portfolio3");
         stage.setScene(scene);
         stage.show();
     }
+
     public static void main(String[] args) {
         launch(args);
     }
 }
-
 
 class Controller {
     Model model;
@@ -101,6 +117,30 @@ class Controller {
             view.teacher.getItems().add(s);
         }
     }
+    void addCourse(String s) {
+        if (model.hasCourse(s)) {
+            view.setArea("Cannot insert Course (repeat) " + s);
+        } else {
+            model.addCourse(s);
+            view.courses.getItems().add(s);
+        }
+    }
+    void addRoom(String s) {
+        if (model.hasRoom(s)) {
+            view.setArea("Cannot insert Room (repeat) " + s);
+        } else {
+            model.addRoom(s);
+            view.courses.getItems().add(s);
+        }
+    }
+    void addTimeBlock(String s) {
+        if (model.hasTimeBlock(s)) {
+            view.setArea("Cannot insert TimeBlock (repeat) " + s);
+        } else {
+            model.addTimeBlock(s);
+            view.courses.getItems().add(s);
+        }
+    }
 }
 
 class Model {
@@ -117,14 +157,23 @@ class Model {
         return db.query("select name from Teacher;", "name");
     }
 
+    void addCourse(String s){
+        db.cmd("insert into Course (CourseName) values ('"+s+"');");
+    }
     ArrayList<String> getCourse() {
         return db.query("select CourseName from Course;", "CourseName");
     }
 
+    void addRoom(String s){
+        db.cmd("insert into Room (RoomName) values ('"+s+"');");
+    }
     ArrayList<String> getRoom() {
         return db.query("select RoomName from Room;", "RoomName");
     }
 
+    void addTimeBlock(String s){
+        db.cmd("insert into TimeBlock (Time) values ('"+s+"');");
+    }
     ArrayList<String> getTimeBlock() {
         return db.query("select Time from TimeBlock;", "Time");
     }
@@ -136,11 +185,29 @@ class Model {
     ArrayList<String> get() {
         return db.query("select name from Teacher order by name;", "name");
     }
+
     boolean hasTeacher(String s) {
         ArrayList<String> lst = db.query("select name from Teacher where name = '" + s + "';", "name");
         System.out.println(lst);
         return lst.size() > 0;
-        //return getTeacher().contains(s);
+
+    }
+    boolean hasCourse(String s) {
+        ArrayList<String> lst = db.query("select CourseName from Course where name = '" + s + "';", "CourseName");
+        System.out.println(lst);
+        return lst.size() > 0;
+
+    }
+    boolean hasRoom(String s) {
+        ArrayList<String> lst = db.query("select RoomName from Room where name = '" + s + "';", "RoomName");
+        System.out.println(lst);
+        return lst.size() > 0;
+
+    }
+    boolean hasTimeBlock(String s) {
+        ArrayList<String> lst = db.query("select name from TimeBlock where name = '" + s + "';", "Time");
+        System.out.println(lst);
+        return lst.size() > 0;
     }
 
 }
