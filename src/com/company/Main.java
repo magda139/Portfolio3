@@ -13,11 +13,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import javax.xml.crypto.Data;
+
 public class Main extends Application {
 
     private Model model=new Model();
     private Controller con=new Controller(model,this);
-    private TextField field=new TextField();
+    //private TextField field=new TextField();
     private TextArea area=new TextArea();
     TableView<Schedule> table = new TableView<Schedule>();
     HBox hb = new HBox();
@@ -27,22 +29,15 @@ public class Main extends Application {
     ComboBox<String> rooms = new ComboBox<>();
     ComboBox<String> time= new ComboBox<>();
 
-    Button buttonC = new Button("Add Course");
     Button buttonT = new Button("Available teachers");
     Button buttonR = new Button("Find Room");
-    Button buttonTi = new Button("Add Time");
-
 
     void setArea(String s){area.setText(s);}
-    void clearField(){field.setText("");}
-
-
+    //void clearField(){field.setText("");}
 
     @Override
     public void start(Stage stage) {
         con.initArea();
-        area.setStyle("-fx-cell-size: 20");
-       //field.setOnAction(e->con.enterText(field.getText()));
 
         GridPane newDataPane = this.getScheduleDataPane();
 
@@ -65,8 +60,6 @@ public class Main extends Application {
         teacher.getItems().addAll(model.getTeacher());
 
 
-
-
         TableColumn CourseColumn = new TableColumn<Schedule,String> ("Course");
         CourseColumn.setCellValueFactory(new PropertyValueFactory<Schedule, String>("course"));
 
@@ -86,7 +79,6 @@ public class Main extends Application {
         TeacherColumn.setCellValueFactory(new PropertyValueFactory<Schedule, String>("teacher"));
 
 
-
         table.getColumns().addAll(CourseColumn);
      //   table.getColumns().addAll(StudentExpectedColumn);
         table.getColumns().addAll(TimeBlockColumn);
@@ -95,25 +87,33 @@ public class Main extends Application {
         table.getColumns().addAll(TeacherColumn);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        buttonC.setOnAction(e->con.addCourse(field.getText()));
-        buttonT.setOnAction(e->con.addTeacher(field.getText()));
-        //buttonR.setOnAction(e->con.addRoom(field.getText()));
         buttonR.setOnAction(e->con.findRoom(courses.getValue()));
-        buttonTi.setOnAction(e->con.addTimeBlock(field.getText()));
-
-
+        //buttonT.setOnAction(e->con.findTeacher(time.getValue()));
 
         BorderPane border = new BorderPane();
         border.setLeft(vbox);
         border.setCenter(table);
         border.setBottom(area);
 
-
-
         Scene scene = new Scene(border, 500, 600);
         stage.setTitle("Portfolio3");
         stage.setScene(scene);
         stage.show();
+
+       /* String query = "INSERT INTO Schedule (Course, Teacher, Room, TimeBlock) VALUES (?,?,?,?)";
+        courses = conn.prepareStatement(query);
+
+        for(int i=0; i<data.size(); i++){
+
+            pst.setString(1, data.get(i).getRID().toString());
+            pst.setString(2, data.get(i).getRName());
+            pst.setString(3, data.get(i).getRQty().toString());
+            pst.setString(4, data.get(i).getRPrice().toString());
+
+
+            pst.execute();
+
+        }*/
     }
 
     public GridPane getScheduleDataPane()
@@ -125,48 +125,23 @@ public class Main extends Application {
             pane.setHgap(10);
             pane.setVgap(5);
 
-
-
-    // Add the TextFields to the Pane
-           // pane.addRow(0, new Label("Course"), courses);
-          //  pane.addRow(1, new Label("e"), time);
-           // pane.addRow(2, new Label("Room"),rooms);
-          //  pane.addRow(3, new Label("Teacher"), teacher);
-
-
     // Create the Add Button and add Event-Handler
         Button AddButton = new Button("Add to the Schedule");
-        AddButton.setOnAction(new EventHandler<ActionEvent>()
-        {
-            @Override public void handle(ActionEvent e)
-            {
-                addSchedule();
-            }
-        });
-
+        AddButton.setOnAction(e -> addSchedule());
 
         // Add the Add Button to the GridPane
-            pane.add(AddButton, 2, 0);
-
+            pane.add(AddButton, 1, 10);
             return pane;
     }
 
     public void addSchedule(){
-
-        // Create a new Person Object
-        Schedule Schedule = new Schedule(courses.getValue(),time.getValue(),rooms.getValue(),
-              teacher.getValue());
-
-        // Add the new Person to the table
+        // Create a new Schedule
+        Schedule Schedule = new Schedule(courses.getValue(),time.getValue(),rooms.getValue(), teacher.getValue());
+        // Add the new Schedule to the table
         table.getItems().add(Schedule);
     }
-
-
 
     public static void main(String[] args) {
         launch(args);
     }
 }
-
-
-
