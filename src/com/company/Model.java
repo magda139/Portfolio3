@@ -18,7 +18,12 @@ public class Model {
         db.cmd("insert into Timeslot (name) values ('"+s+"');");
     }*/
     void addSchedule (String CourseName, String Time, String RoomName, String TeacherName){
-        db.cmd("insert into Schedule (CourseName, Time, RoomName, TeacherName) values ('"+CourseName+","+Time+","+RoomName+","+TeacherName+"');");}
+        db.cmd("insert into Schedule (ScheduleID, CourseName, Time, RoomName, TeacherName) values (NULL, '"+CourseName+"','"+Time+"','"+RoomName+"','"+TeacherName+"');");
+    }
+
+    ArrayList<String> getSchedule() {
+        return db.query("select CourseName, Time, RoomName, TeacherName from Schedule;", "TeacherName");
+    }
 
         ArrayList<String> getTeacher() {
             return db.query("select TeacherName from Teacher;", "TeacherName");
