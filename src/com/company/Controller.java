@@ -56,6 +56,9 @@ public class Controller {
                 view.courses.getItems().add(s);
             }
         }
+
+
+
         void findRoom(String c) {
             String room = model.findRoom(c);
             if (room.equals("")) view.setArea("No Room");

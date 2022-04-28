@@ -9,6 +9,7 @@ public class Model {
         Model() {
         }
 
+
         void addTeacher(String s){
             db.cmd("insert into Teacher (name) values ('"+s+"');");
         }
@@ -81,6 +82,8 @@ public class Model {
             System.out.println(lst);
             return lst.size() > 0;
         }
+
+
 
     }
 
