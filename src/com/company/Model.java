@@ -8,6 +8,18 @@ public class Model {
 
         MyDB db = new MyDB();
 
+    /*void addSchedule(String courseName, String time, String roomName, String teacherName){
+        db.cmd("insert into Schedule (CourseName, Time, RoomName, TeacherName) values ('%1$s, %2$s, %3$s, %4$s');", ("courseName, time, roomName, teacherName");}
+    }*/
+
+    /*void addSchedule(String courseName, String time, String roomName, String teacherName){
+        db.cmd(String.format("insert into Schedule (CourseName, Time, RoomName, TeacherName) values ('%1$s, %2$s, %3$s, %4$s');", courseName, time, roomName, teacherName));
+     void addTimeslot(String s){ // remember to sanitize your data!
+        db.cmd("insert into Timeslot (name) values ('"+s+"');");
+    }*/
+    void addSchedule (String CourseName, String Time, String RoomName, String TeacherName){
+        db.cmd("insert into Schedule (CourseName, Time, RoomName, TeacherName) values ('"+CourseName+","+Time+","+RoomName+","+TeacherName+"');");}
+
         ArrayList<String> getTeacher() {
             return db.query("select TeacherName from Teacher;", "TeacherName");
         }
@@ -26,12 +38,12 @@ public class Model {
 
 
 
-       /* void add(String s) { // remember to sanitize your data!
-            db.cmd("insert into Schedule (Course, StudentExpected,Teacher, Room, RoomCapacity) values ('" + s + "');");
-        }*/
+       void add(String s) { // remember to sanitize your data!
+            db.cmd("insert into Schedule (CourseName,Time, RoomName, TeacherName) values ('" + s + "');");
+        }
 
         ArrayList<String> get() {
-            return db.query("select Course, StudentExpected,Teacher, Room, RoomCapacity from Schedule order by LectureID;", "Course, StudentExpected,Teacher, Room, RoomCapacity");
+            return db.query("select CourseName,Time, RoomName, TeacherName from Schedule order by ScheduleID;", "CourseName,Time, RoomName, TeacherName");
         }
 
         String findRoom(String c){
