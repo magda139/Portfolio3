@@ -22,6 +22,8 @@ public class Main extends Application {
     //private TextField field=new TextField();
     private TextArea area = new TextArea();
     TableView<Schedule> table = new TableView<Schedule>();
+
+
     HBox hb = new HBox();
 
     ComboBox<String> teacher = new ComboBox<>();
@@ -121,7 +123,24 @@ public class Main extends Application {
             pane.add(AddButton, 1, 10);
             return pane;*/
         Button AddButton = new Button("Add to the Schedule");
-        AddButton.setOnAction(e -> model.addSchedule(courses.getValue(), time.getValue(), rooms.getValue(), teacher.getValue()));
+        //AddButton.setOnAction(e -> model.addSchedule(courses.getValue(), time.getValue(), rooms.getValue(), teacher.getValue()));
+        AddButton.setOnAction(new EventHandler<ActionEvent>()
+        {
+            @Override public void handle(ActionEvent e)
+            {
+                if (courses.getValue() != null &&
+                    time.getValue() != null &&
+                    rooms.getValue() != null &&
+                    teacher.getValue() != null)
+                {
+                    model.addSchedule(courses.getValue(), time.getValue(), rooms.getValue(), teacher.getValue());
+                }
+                else
+                {
+                    System.out.println("Retard. You need to choose all values.");
+                }
+            }
+        });
 
         pane.add(AddButton, 1, 10);
         return pane;
