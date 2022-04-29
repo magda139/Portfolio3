@@ -60,5 +60,19 @@ public class Model {
             else return Schedule.get(0);
         }
 
+        /*String availableTeachers(String d){
+        ArrayList<String> Schedule = db.query("select Schedule.TeacherName from Schedule inner join Schedule"
+                + "where Schedule.Time = '"+ d +"' and Schedule.Teacher != Schedule.Time;","Teacher");
+            System.out.println(Schedule);
+            if(Schedule.size()==0)return "";
+            else return Schedule.get(0);
+        }*/
+        String availableTeachers(String d) {
+            ArrayList<String> lst = db.query("select TeacherName from Schedule where TeacherName = '" + d + "' and Schedule.TeacherName != Schedule.Time;", "TeacherName");
+            System.out.println(lst);
+            if(lst.size()==0)return "";
+            else return lst.get(0);
+        }
+
     }
 

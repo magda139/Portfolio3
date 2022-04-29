@@ -22,4 +22,9 @@ public class Controller {
             if (room.equals("")) view.setArea("No Room");
             else view.setArea("Room: " + room);
         }
+    void availableTeachers(String d) {
+        String teachers = model.availableTeachers(d);
+        if (teachers.equals("")) view.setArea("No teachers");
+        else view.setArea("Available Teachers: " + teachers);
+    }
     }
