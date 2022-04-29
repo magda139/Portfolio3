@@ -7,7 +7,6 @@ public class Controller {
         Controller(Model model, Main view) {
             this.model = model;
             this.view = view;
-
         }
 
         //print area
@@ -18,8 +17,9 @@ public class Controller {
         }
 
         void findRoom(String c) {
-            String room = model.findRoom(c);
-            if (room.equals("")) view.setArea("No Room");
-            else view.setArea("Room: " + room);
+            String rooms = model.findRoom(c);
+            if (rooms.equals("")) view.setArea("No Room");
+            else view.setArea("Recommended Room: " + rooms);
         }
+
     }
