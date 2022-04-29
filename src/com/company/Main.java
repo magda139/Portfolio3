@@ -112,7 +112,7 @@ public class Main extends Application {
                 }
                 else
                 {
-                    System.out.println("Retard. You need to choose all values.");
+                    System.out.println("You need to choose all values.");
                 }
             }
         });
@@ -124,7 +124,6 @@ public class Main extends Application {
         Schedule Schedule = new Schedule(courses.getValue(), time.getValue(), rooms.getValue(), teacher.getValue());
         table.getItems().add(Schedule);
     }
-
     public static void main (String[]args){
         launch(args);
     }

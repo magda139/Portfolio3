@@ -21,5 +21,4 @@ public class Controller {
             if (rooms.equals("")) view.setArea("No Room");
             else view.setArea("Recommended Room: " + rooms);
         }
-
     }
